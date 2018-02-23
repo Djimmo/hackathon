@@ -4,8 +4,8 @@
     {
         // Base Url for Alpha Vantage
         public const string Base = "https://api.intrinio.com/";
-        public const string Username = "d9adde9af7b73c3d791c8b3fc69748dd";
-        public const string Password = "d3cf67af2b01ed8aa3c6cd3557196d6c";
+        public const string Username = "0ec821ac3d8ece303c432eeca52454a9";
+        public const string Password = "f0ea4bc8d36dda35de564e15ae1557cb";
 
         // Functions
         public const string Prices = "prices?identifier=";

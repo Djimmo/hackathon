@@ -46,7 +46,7 @@
         [LuisIntent("ShowGraph")]
         public async Task ShowGraphIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            var query = result.Entities.FirstOrDefault().Entity as string;
+            var query = result.Entities.FirstOrDefault()?.Entity as string;
             if (query == null)
             {
                 var errorResult = "Try something else, please.";
@@ -75,7 +75,7 @@
         [LuisIntent("ShowGraphCandle")]
         public async Task ShowGraphCandleIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            var query = result.Entities.FirstOrDefault().Entity as string;
+            var query = result.Entities.FirstOrDefault()?.Entity as string;
             if (query == null)
             {
                 var errorResult = "Try something else, please.";
@@ -114,7 +114,7 @@
         [LuisIntent("CompanyInfoShort")]
         public async Task CompanyInfoShortIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            var query = result.Entities.FirstOrDefault().Entity as string;
+            var query = result.Entities.FirstOrDefault()?.Entity as string;
             if (query == null)
             {
                 var errorResult = "Try something else, please.";
@@ -138,10 +138,10 @@
         [LuisIntent("StockLastPrice")]
         public async Task StockLastPriceIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            var query = result.Entities.FirstOrDefault().Entity as string;
+            var query = result.Entities.FirstOrDefault()?.Entity as string;
             if (query == null)
             {
-                var errorResult = "Try something else, please.";
+                var errorResult = "I could not find anything. Did you make a typo?";
                 await context.PostAsync(errorResult);
                 context.Wait(this.MessageReceived);
                 return;
