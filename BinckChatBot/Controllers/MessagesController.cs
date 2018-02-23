@@ -8,8 +8,10 @@
     using System.Text;
     using System.Threading.Tasks;
     using System.Web.Http;
-    using Microsoft.Bot.Connector;
+    using Microsoft.Bot.Connector;  
     using Oracle.ManagedDataAccess.Client;
+    using Microsoft.Bot.Builder.Dialogs;
+    using BinckChatBot.Dialogs;
 
     [BotAuthentication]
     public class MessagesController : ApiController
@@ -18,106 +20,125 @@
         ///     POST: api/Messages
         ///     Receive a message from a user and reply to it
         /// </summary>
-        public async Task<HttpResponseMessage> Post([FromBody] Activity activity)
+        /// 
+        public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                Activity reply;
-                var inputCommand = activity.Text.Split();
-
-                switch (inputCommand[0])
-                {
-                    case "/aex":
-                        reply =
-                            activity.CreateReply(
-                                $"De huidige koers van de **AEX** is **{GetPrice(3829)}** punten.");
-                        break;
-                    case "/price":
-                        try
-                        {
-                            var info = GetPriceByName(inputCommand[1]);
-                            reply =
-                                activity.CreateReply(
-                                    $"De huidige koers van **{info[1]}** is **{info[0]}** punten.");
-                        }
-                        catch
-                        {
-                            reply =
-                                activity.CreateReply(
-                                    "Dit symbool is niet bekend bij mij. Probeer het nog eens of zoek op naam via **/search** voor een lijst met symbolen.");
-                        }
-                        break;
-                    case "/search":
-                        try
-                        {
-                            var resultTable = GetSymbolByName(inputCommand[1]);
-
-                            StringBuilder sb = new StringBuilder();
-                            for (int i = 0; i < resultTable.Rows.Count; i++)
-                            {
-                                sb.Append(
-                                    $"Fonds **{resultTable.Rows[i][0]}** {resultTable.Rows[i][1]} -> Symbool **{resultTable.Rows[i][2]}**<br/>");
-                            }
-                            reply =
-                                activity.CreateReply(sb.ToString());
-                        }
-                        catch
-                        {
-                            reply =
-                                activity.CreateReply(
-                                    "Deze naam is niet bekend, probeer het eens met een andere naam");
-                        }
-                        break;
-                    case "/help":
-                        reply =
-                            activity.CreateReply(
-                                "**Command List:**<br/>**/aex**: prijs van AEX-index<br/>**/price** <i>(symbool)</i>: prijs van gekozen stock<br/>**/search** <i>(fondsnaam)</i>: zoek symbool op fondsnaam.<br/>**/faq**: Veelgestelde vragen.<br/>**/klantworden**: Informatie om klant te worden.<br/>**/disclaimer**: disclaimer BinckChatBot.");
-                        break;
-                    case "/klantworden":
-                        reply = activity.CreateReply("Word klant bij Binck!<br/>https://www.binck.nl/meer-informatie");
-                        reply.Attachments.Add(new Attachment()
-                        {
-                            ContentUrl = "http://beleggenvergelijk.nl/wp-content/uploads/2011/12/binckbank.jpg",
-                            ContentType = "image/png",
-                            Name = "BinckBank Logo"
-                        }
-                            );
-                        break;
-                    case "/disclaimer":
-                        reply =
-                            activity.CreateReply(
-                                "**Disclaimer:**<br/>De tarieven, meningen, nieuws, gegevens en andere informatie via deze chatbot zijn continu aan wijziging onderhevig en deels afkomstig van derden. BinckBank betracht de grootst mogelijke zorgvuldigheid in de samenstelling van de Informatie, maar garandeert niet dat de Informatie compleet en/of accuraat is, noch aanvaardt BinckBank enige aansprakelijkheid voor directe of indirecte schade welke is ontstaan door gebruikmaking van de Informatie, behoudens opzet of grove schuld van BinckBank. De Informatie kan niet worden aangemerkt als enige vorm van (beleggings)advies.");
-                        reply.Attachments.Add(new Attachment()
-                        {
-                            ContentUrl =
-                                "https://www.binck.nl/images/librariesprovider9/headerandfooter/logo-188x31.png?sfvrsn=4",
-                            ContentType = "image/png",
-                            Name = "BinckBank Logo"
-                        });
-                        break;
-                    case "/faq":
-                        string faqQuestions = Faq.NL.Aggregate("", (current, item) => current + "" + item.Key + "<br/>" + item.Value + "<br/>---<br/>");
-
-                        reply = activity.CreateReply(faqQuestions);
-                        break;
-                    default:
-                        reply =
-                            activity.CreateReply(
-                                "Welkom bij de BinckChatBot.<br/>Typ **/help** om een overzicht van alle commando's te krijgen.");
-                        break;
-                }
-
-                // return our reply to the user
-                await connector.Conversations.ReplyToActivityAsync(reply);
+                await Conversation.SendAsync(activity, () => new RootLuisDialog());
             }
             else
             {
                 HandleSystemMessage(activity);
             }
+
             var response = Request.CreateResponse(HttpStatusCode.OK);
             return response;
         }
+
+
+
+
+        //public async Task<HttpResponseMessage> Post([FromBody] Activity activity)
+        //{
+        //    if (activity.Type == ActivityTypes.Message)
+        //    {
+        //        ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+        //        Activity reply;
+        //        var inputCommand = activity.Text.Split();
+
+        //        switch (inputCommand[0])
+        //        {
+        //            case "/aex":
+        //                reply =
+        //                    activity.CreateReply(
+        //                        $"De huidige koers van de **AEX** is **{GetPrice(3829)}** punten.");
+        //                break;
+        //            case "/price":
+        //                try
+        //                {
+        //                    var info = GetPriceByName(inputCommand[1]);
+        //                    reply =
+        //                        activity.CreateReply(
+        //                            $"De huidige koers van **{info[1]}** is **{info[0]}** punten.");
+        //                }
+        //                catch
+        //                {
+        //                    reply =
+        //                        activity.CreateReply(
+        //                            "Dit symbool is niet bekend bij mij. Probeer het nog eens of zoek op naam via **/search** voor een lijst met symbolen.");
+        //                }
+        //                break;
+        //            case "/search":
+        //                try
+        //                {
+        //                    var resultTable = GetSymbolByName(inputCommand[1]);
+
+        //                    StringBuilder sb = new StringBuilder();
+        //                    for (int i = 0; i < resultTable.Rows.Count; i++)
+        //                    {
+        //                        sb.Append(
+        //                            $"Fonds **{resultTable.Rows[i][0]}** {resultTable.Rows[i][1]} -> Symbool **{resultTable.Rows[i][2]}**<br/>");
+        //                    }
+        //                    reply =
+        //                        activity.CreateReply(sb.ToString());
+        //                }
+        //                catch
+        //                {
+        //                    reply =
+        //                        activity.CreateReply(
+        //                            "Deze naam is niet bekend, probeer het eens met een andere naam");
+        //                }
+        //                break;
+        //            case "/help":
+        //                reply =
+        //                    activity.CreateReply(
+        //                        "**Command List:**<br/>**/aex**: prijs van AEX-index<br/>**/price** <i>(symbool)</i>: prijs van gekozen stock<br/>**/search** <i>(fondsnaam)</i>: zoek symbool op fondsnaam.<br/>**/faq**: Veelgestelde vragen.<br/>**/klantworden**: Informatie om klant te worden.<br/>**/disclaimer**: disclaimer BinckChatBot.");
+        //                break;
+        //            case "/klantworden":
+        //                reply = activity.CreateReply("Word klant bij Binck!<br/>https://www.binck.nl/meer-informatie");
+        //                reply.Attachments.Add(new Attachment()
+        //                {
+        //                    ContentUrl = "http://beleggenvergelijk.nl/wp-content/uploads/2011/12/binckbank.jpg",
+        //                    ContentType = "image/png",
+        //                    Name = "BinckBank Logo"
+        //                }
+        //                    );
+        //                break;
+        //            case "/disclaimer":
+        //                reply =
+        //                    activity.CreateReply(
+        //                        "**Disclaimer:**<br/>De tarieven, meningen, nieuws, gegevens en andere informatie via deze chatbot zijn continu aan wijziging onderhevig en deels afkomstig van derden. BinckBank betracht de grootst mogelijke zorgvuldigheid in de samenstelling van de Informatie, maar garandeert niet dat de Informatie compleet en/of accuraat is, noch aanvaardt BinckBank enige aansprakelijkheid voor directe of indirecte schade welke is ontstaan door gebruikmaking van de Informatie, behoudens opzet of grove schuld van BinckBank. De Informatie kan niet worden aangemerkt als enige vorm van (beleggings)advies.");
+        //                reply.Attachments.Add(new Attachment()
+        //                {
+        //                    ContentUrl =
+        //                        "https://www.binck.nl/images/librariesprovider9/headerandfooter/logo-188x31.png?sfvrsn=4",
+        //                    ContentType = "image/png",
+        //                    Name = "BinckBank Logo"
+        //                });
+        //                break;
+        //            case "/faq":
+        //                string faqQuestions = Faq.NL.Aggregate("", (current, item) => current + "" + item.Key + "<br/>" + item.Value + "<br/>---<br/>");
+
+        //                reply = activity.CreateReply(faqQuestions);
+        //                break;
+        //            default:
+        //                reply =
+        //                    activity.CreateReply(
+        //                        "Welkom bij de BinckChatBot.<br/>Typ **/help** om een overzicht van alle commando's te krijgen.");
+        //                break;
+        //        }
+
+        //        // return our reply to the user
+        //        await connector.Conversations.ReplyToActivityAsync(reply);
+        //    }
+        //    else
+        //    {
+        //        HandleSystemMessage(activity);
+        //    }
+        //    var response = Request.CreateResponse(HttpStatusCode.OK);
+        //    return response;
+        //}
 
         private static DataTable GetSymbolByName(string s)
         {
