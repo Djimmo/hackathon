@@ -8,7 +8,7 @@
 
     public class GraphCreator
     {
-        private static string GetDesktopPath()
+        public static string GetDesktopPath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
