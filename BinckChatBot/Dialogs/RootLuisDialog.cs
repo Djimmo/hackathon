@@ -124,5 +124,15 @@
             await context.PostAsync(replyMessage);
             context.Wait(this.MessageReceived);
         }
+ 
+      [LuisIntent("NewCustomer")]
+      public async Task NewCustomerIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
+      {
+        var resultTxt = "Sure you can become a customer of the BEST broker in the world. Click this link to join: https://www.binck.nl/meer-informatie";
+        await context.PostAsync(resultTxt);
+        context.Wait(this.MessageReceived);
+      }
+
     }
+
 }
