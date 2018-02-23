@@ -12,6 +12,9 @@ namespace BinckChatBot.BinckApi
 {
     public class BinckApiService
     {
+
+        // refresh this token every our
+        // use TOPLIN11353100/toplinealex
         static string accessToken = "b793b12f-4125-46e2-9edf-bffa36e4f5db";
 
         static public AccountsCollectionModel GetAccounts()
