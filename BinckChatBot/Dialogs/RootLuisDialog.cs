@@ -70,5 +70,12 @@
             await context.PostAsync("Company Info Short");
             context.Wait(this.MessageReceived);
         }
+
+        [LuisIntent("StockLastPrice")]
+        public async Task StockLastPriceIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
+        {
+            await context.PostAsync($"StockLastPrice: {result.Entities.First().Entity}");
+            context.Wait(this.MessageReceived);
+        }
     }
 }
