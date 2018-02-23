@@ -215,7 +215,7 @@
                 Euronext/andere beurzen rekenen ons namelijk hoge kosten voor koersdata voor prof-beleggers.U kunt dit instellen op de Binck website via de instellingen."
              */
 
-            replyMessage.Text = "<i>Why don't I have RealTime streaming quotes</i><br/>" +
+            replyMessage.Text = "*Why don't I have RealTime streaming quotes*<br/>" +
                 "Quotes are delayed by 15 minutes by default since we have to differentiate professionals and non-professionals.<br/>"
                 + "Euronext/other exchanges apply higher cost rates for quotes for professional traders.<br/>"
                 + "You can change this in the settings on the Binck website at https://web.binck.nl/Settings/Index?groupName=QuoteSubscriptions";
