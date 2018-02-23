@@ -28,13 +28,34 @@
         [LuisIntent("Hello")]
         public async Task FavouriteColorIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            await context.PostAsync("Hello, I'm Binck Buddy. How may I be of assistance?");
+            var random = new Random();
+
+            if (random.Next(0, 10) < 5)
+            {
+                await context.PostAsync("Hello, I'm Binck Buddy. How may I be of assistance?");
+            } else
+            {
+                await context.PostAsync("Hi, I live to serve. How can I please you?");
+            }
             context.Wait(this.MessageReceived);
         }
 
+        [LuisIntent("ShowGraph")]
+        public async Task ShowGraphIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
+        {
+            await context.PostAsync("Show graph");
+            context.Wait(this.MessageReceived);
+        }
+
+        [LuisIntent("ShowGraphCandle")]
+        public async Task ShowGraphCandleIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
+        {
+            await context.PostAsync("Show Graph Candle");
+            context.Wait(this.MessageReceived);
+        }
 
         [LuisIntent("GetAccount")]
-        public async Task GetAccountsIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
+        public async Task GetAccountIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
             var accountsCollection = BinckApiService.GetAccounts().Accounts;
 
@@ -43,26 +64,10 @@
             context.Wait(this.MessageReceived);
         }
 
-        [LuisIntent("ShowStockIntent")]
-        public async Task ShowStockIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
+        [LuisIntent("CompanyInfoShort")]
+        public async Task CompanyInfoShortIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            await context.PostAsync("My favourite technologies are Azure, Mixed Reality and Xamarin!");
-            context.Wait(this.MessageReceived);
-        }
-
-        
-
-        [LuisIntent("WhatsYourNameIntent")]
-        public async Task WhatsYourNameIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
-        {
-            await context.PostAsync("My name is Davide, of course :)");
-            context.Wait(this.MessageReceived);
-        }
-
-        [LuisIntent("HelloIntent")]
-        public async Task HelloIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
-        {
-            await context.PostAsync(@"Hi there! Davide here :) This is my personal Bot. Try asking 'What are your favourite technologies?'");
+            await context.PostAsync("Company Info Short");
             context.Wait(this.MessageReceived);
         }
     }
