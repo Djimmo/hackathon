@@ -12,7 +12,7 @@ namespace BinckChatBot.BinckApi
 {
     public class BinckApiService
     {
-        static string accessToken = "26cae252-5651-4389-850f-cb643e7ccd3b";
+        static string accessToken = "b793b12f-4125-46e2-9edf-bffa36e4f5db";
 
         static public AccountsCollectionModel GetAccounts()
         {
