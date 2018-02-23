@@ -1,6 +1,7 @@
 ﻿namespace BinckChatBot.Dialogs
 {
     using System;
+    using IntrinionApi;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -43,14 +44,44 @@
         [LuisIntent("ShowGraph")]
         public async Task ShowGraphIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            await context.PostAsync("Show graph");
+            var query = result.Entities.FirstOrDefault().Entity as string;
+            var symbol = IntrinioApiService.GetTickerByName(query);
+            var quotes = IntrinioApiService.SymbolDailyRequest(symbol.ticker);
+
+            var graphPath = Graphics.GraphCreator.CreateChartClose(quotes.data);
+
+            var replyMessage = context.MakeMessage();
+            replyMessage.Text = "Here is your graph.";
+            replyMessage.Attachments.Add(new Attachment
+            {
+                ContentUrl = graphPath,
+                ContentType = "image/png",
+                Name = "BinckBank Logo"
+            });
+
+            await context.PostAsync(replyMessage);
             context.Wait(this.MessageReceived);
         }
 
         [LuisIntent("ShowGraphCandle")]
         public async Task ShowGraphCandleIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            await context.PostAsync("Show Graph Candle");
+            var query = result.Entities.FirstOrDefault().Entity as string;
+            var symbol = IntrinioApiService.GetTickerByName(query);
+            var quotes = IntrinioApiService.SymbolDailyRequest(symbol.ticker);
+
+            var graphPath = Graphics.GraphCreator.CreateChartCandleStick(quotes.data, 10);
+
+            var replyMessage = context.MakeMessage();
+            replyMessage.Text = "Here is your graph.";
+            replyMessage.Attachments.Add(new Attachment
+            {
+                ContentUrl = graphPath,
+                ContentType = "image/png",
+                Name = "BinckBank Logo"
+            });
+
+            await context.PostAsync(replyMessage);
             context.Wait(this.MessageReceived);
         }
 
@@ -67,14 +98,30 @@
         [LuisIntent("CompanyInfoShort")]
         public async Task CompanyInfoShortIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            await context.PostAsync("Company Info Short");
+            var query = result.Entities.FirstOrDefault().Entity as string;
+            var symbol = IntrinioApiService.GetTickerByName(query);
+            var info = IntrinioApiService.GetCompanyInfoByTicker(symbol.ticker);
+
+
+            var replyMessage = context.MakeMessage();
+            replyMessage.Text = $"{query} found {info.name} which does:{Environment.NewLine}{info.short_description}" +
+                $"{Environment.NewLine}More can be found at {info.company_url}";
+
+            await context.PostAsync(replyMessage);
             context.Wait(this.MessageReceived);
         }
 
         [LuisIntent("StockLastPrice")]
         public async Task StockLastPriceIntent(IDialogContext context, IAwaitable<IMessageActivity> activity, LuisResult result)
         {
-            await context.PostAsync($"StockLastPrice: {result.Entities.First().Entity}");
+            var query = result.Entities.FirstOrDefault().Entity as string;
+            var symbol = IntrinioApiService.GetTickerByName(query);
+            var rtn = IntrinioApiService.GetCloseQuoteForSymbol(symbol.ticker);
+
+            var replyMessage = context.MakeMessage();
+            replyMessage.Text = $"The last price for {query} on {rtn.date} is {rtn.adj_high}";
+
+            await context.PostAsync(replyMessage);
             context.Wait(this.MessageReceived);
         }
     }

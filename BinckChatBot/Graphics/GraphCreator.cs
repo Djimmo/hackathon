@@ -8,17 +8,12 @@
 
     public class GraphCreator
     {
-        public GraphCreator()
-        {
-
-        }
-
-        private string GetDesktopPath()
+        private static string GetDesktopPath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
-        private Chart CreateDefaultChart(double yLow, double yHigh)
+        private static Chart CreateDefaultChart(double yLow, double yHigh)
         {
             var chart = new Chart();
             chart.Size = new Size(600, 250);
@@ -38,7 +33,7 @@
             return chart;
         }
 
-        public string CreateChartCandleStick(Contracts.INDaily[] quotes, int days)
+        public static string CreateChartCandleStick(Contracts.INDaily[] quotes, int days)
         {
             var adjustedPeriod = quotes.Take(days).ToArray();
 
@@ -86,7 +81,7 @@
             return path;
         }
 
-        public string CreateChartClose(Contracts.INDaily[] quotes)
+        public static string CreateChartClose(Contracts.INDaily[] quotes)
         {
             var yLow = quotes.Min(q => q.adj_low);
             if (yLow < 0) yLow = 0;
