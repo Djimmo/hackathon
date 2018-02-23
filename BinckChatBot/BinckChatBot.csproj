@@ -122,12 +122,19 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BinckApi\BinckApiService.cs" />
+    <Compile Include="Contracts\INCompany.cs" />
+    <Compile Include="Contracts\INDaily.cs" />
+    <Compile Include="Contracts\INDailyResponse.cs" />
+    <Compile Include="Contracts\INSearchResult.cs" />
+    <Compile Include="Contracts\INSearchResults.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Dialogs\RootLuisDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Interface1.cs" />
+    <Compile Include="IntrinionApi\INConsts.cs" />
+    <Compile Include="IntrinionApi\IntrinioApiService.cs" />
     <Compile Include="Lib\FAQ.cs" />
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\AccountsCollectionModel.cs" />
